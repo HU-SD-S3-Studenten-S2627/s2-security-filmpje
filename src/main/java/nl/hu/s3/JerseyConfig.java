@@ -10,6 +10,7 @@ public class JerseyConfig extends ResourceConfig {
     public JerseyConfig() {
 
         register(DemoResource.class);
+        register(LoginResource.class);
         register(AuthFilter.class);
     }
 }
