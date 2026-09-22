@@ -5,3 +5,31 @@ Accept: application/json
 {
   "message": "Test Public"
 }
+
+###
+POST http://localhost:8080/api/demo/private
+Content-Type: application/json
+Accept: application/json
+Authorization: Basic test:testpw
+
+{
+  "message": "Test private"
+}
+
+###
+POST http://localhost:8080/api/demo/private
+Content-Type: application/json
+Accept: application/json
+Authorization: Basic test:ongeldigwachtwoord
+
+{
+  "message": "Test private"
+}
+
+###
+GET http://localhost:8080/api/demo/private
+
+
+###
+GET http://localhost:8080/api/demo/private
+Authorization: Basic test:testpw
