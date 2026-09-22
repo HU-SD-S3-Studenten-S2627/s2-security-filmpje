@@ -1,6 +1,6 @@
 package nl.hu.s3;
 
-public class User {
+public class User  {
     private String username;
     private String password;
 
@@ -16,4 +16,5 @@ public class User {
     public String getPassword() {
         return password;
     }
+
 }

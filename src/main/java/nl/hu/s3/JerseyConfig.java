@@ -2,6 +2,7 @@ package nl.hu.s3;
 
 import jakarta.ws.rs.ApplicationPath;
 import org.glassfish.jersey.server.ResourceConfig;
+import org.glassfish.jersey.server.filter.RolesAllowedDynamicFeature;
 import org.springframework.context.annotation.Configuration;
 
 @ApplicationPath("/api")
@@ -12,5 +13,6 @@ public class JerseyConfig extends ResourceConfig {
         register(DemoResource.class);
         register(LoginResource.class);
         register(AuthFilter.class);
+        register(RolesAllowedDynamicFeature.class);
     }
 }

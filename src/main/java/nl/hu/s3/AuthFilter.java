@@ -5,13 +5,16 @@ import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import jakarta.annotation.Priority;
+import jakarta.ws.rs.Priorities;
 import jakarta.ws.rs.container.ContainerRequestContext;
 import jakarta.ws.rs.container.ContainerRequestFilter;
+import jakarta.ws.rs.core.SecurityContext;
 
 import javax.crypto.SecretKey;
 import java.io.IOException;
-import java.sql.SQLException;
 
+@Priority(Priorities.AUTHENTICATION)
 public class AuthFilter implements ContainerRequestFilter {
     private static String secret = "Ditiseenhelegeheimestringenwevoegenwoordentoenetzolangtotdelibraryerblijmeeisasdjkfahsdkjfhasdkjhfaskdjhfalksdjhfaslkjdhfaskldjhfasdkljhfasdkljfh";
 
@@ -19,13 +22,18 @@ public class AuthFilter implements ContainerRequestFilter {
     @Override
     public void filter(ContainerRequestContext requestContext) throws IOException {
         String authHeader = requestContext.getHeaderString("Authorization");
-        checkHeader(authHeader);
+        String username = getUserNameFromHeader(authHeader);
+
+        if(username != null){
+            SecurityContext ctx = new MySecurityContext(new UserWithoutPassword(username));
+            requestContext.setSecurityContext(ctx);
+        }
     }
 
 
-    private void checkHeader(String authHeader) {
+    private String getUserNameFromHeader(String authHeader) {
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            throw new RuntimeException("Invalid credentials");
+            return null;
         }
         String token = authHeader.substring("Bearer ".length());
         byte[] keyBytes = Decoders.BASE64.decode(secret);
@@ -36,7 +44,8 @@ public class AuthFilter implements ContainerRequestFilter {
                 .build()
                 .parseClaimsJws(token);
 
-        System.out.println(claims.getBody().getSubject());
+        String username = claims.getBody().getSubject();
 
+        return username;
     }
 }
