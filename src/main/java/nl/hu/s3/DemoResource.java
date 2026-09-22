@@ -21,6 +21,11 @@ public class DemoResource {
     @GET
     @Consumes("application/json")
     public String getPrivate(@HeaderParam("Authorization") String authHeader) throws SQLException {
+        checkHeader(authHeader);
+        return "Dit is prive!" + authHeader;
+    }
+
+    private void checkHeader(String authHeader) throws SQLException {
         if(authHeader == null || !authHeader.startsWith("Basic ")){
             throw new RuntimeException("Invalid credentials");
         }
@@ -33,26 +38,13 @@ public class DemoResource {
         if (postedUser == null || !postedUser.getPassword().equals(password)) {
             throw new RuntimeException("Invalid credentials");
         }
-        return "Dit is prive!" + authHeader;
     }
-
 
     @Path("private")
     @POST
     @Consumes("application/json")
     public String doPrivate(@HeaderParam("Authorization") String authHeader, SomeDTO dto) throws SQLException {
-        if(authHeader == null || !authHeader.startsWith("Basic ")){
-            throw new RuntimeException("Invalid credentials");
-        }
-        String header = authHeader.substring("Basic ".length());
-        String[] split = header.split(":");
-        String username = split[0];
-        String password = split[1];
-        UserDAO userDAO = new UserDAO();
-        User postedUser = userDAO.findUser(username);
-        if (postedUser == null || !postedUser.getPassword().equals(password)) {
-            throw new RuntimeException("Invalid credentials");
-        }
+        checkHeader(authHeader);
 
         return "private" + dto.message;
     }
